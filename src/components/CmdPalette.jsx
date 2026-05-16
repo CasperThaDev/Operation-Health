@@ -1,22 +1,23 @@
 import React, { useState, useEffect, useRef } from "react";
 import { S } from "./UI";
+import { TABS } from "../constants";
 
 export function CmdPalette({onNav,onClose}) {
   const [q,setQ]=useState(""); const ref=useRef();
   useEffect(()=>ref.current?.focus(),[]);
-  const cmds=[
-    {l:"Telemetry — Daily Log",     icon:"📊",a:()=>onNav(0)},
-    {l:"Agency — Client Pipeline",  icon:"🏢",a:()=>onNav(1)},
-    {l:"Budget — Burn Rate",        icon:"💰",a:()=>onNav(2)},
-    {l:"Proposals — Deals",         icon:"📋",a:()=>onNav(3)},
-    {l:"Invoicing — Payments",      icon:"🧾",a:()=>onNav(4)},
-    {l:"Service Tiers — Packages",  icon:"💎",a:()=>onNav(5)},
-    {l:"Architecture — Rules",      icon:"⚙️",a:()=>onNav(6)},
+
+  const cmds = [
+    ...TABS.map(tab => ({
+      l: `${tab.label.charAt(0) + tab.label.slice(1).toLowerCase()} — ${tab.sub}`,
+      icon: tab.icon,
+      a: () => onNav(tab.id)
+    })),
     {l:"Export Telemetry CSV",      icon:"⬇️",a:()=>document.dispatchEvent(new CustomEvent("csv_telem"))},
     {l:"Export Clients CSV",        icon:"⬇️",a:()=>document.dispatchEvent(new CustomEvent("csv_clients"))},
     {l:"Export Invoices CSV",       icon:"⬇️",a:()=>document.dispatchEvent(new CustomEvent("csv_inv"))},
     {l:"Export Proposals CSV",      icon:"⬇️",a:()=>document.dispatchEvent(new CustomEvent("csv_prop"))},
   ].filter(c=>c.l.toLowerCase().includes(q.toLowerCase()));
+
   return (
     <div style={{position:"fixed",inset:0,background:"#000000cc",backdropFilter:"blur(4px)",zIndex:9000,display:"flex",alignItems:"flex-start",justifyContent:"center",paddingTop:"14vh"}} onClick={onClose}>
       <div onClick={e=>e.stopPropagation()} style={{width:"min(540px,92vw)",background:"#0a0a0a",border:"1px solid #00ff8838",borderRadius:12,overflow:"hidden",boxShadow:"0 40px 80px #000000ee"}}>

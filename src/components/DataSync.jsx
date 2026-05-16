@@ -41,10 +41,25 @@ export function DataSync() {
     reader.readAsText(file);
   };
 
+  const clearAllData = () => {
+    if (window.confirm("Are you sure you want to delete ALL application data? This cannot be undone.")) {
+      if (window.confirm("FINAL WARNING: Proceed with data deletion?")) {
+        for (let i = localStorage.length - 1; i >= 0; i--) {
+          const key = localStorage.key(i);
+          if (key.startsWith("v5_")) {
+            localStorage.removeItem(key);
+          }
+        }
+        window.location.reload();
+      }
+    }
+  };
+
   return (
-    <div style={{ display: "flex", gap: 8 }}>
+    <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
       <button onClick={exportData} style={S.btn("#4488ff")}>EXPORT BACKUP</button>
       <button onClick={() => fileInputRef.current.click()} style={S.btn("#ffcc00")}>IMPORT BACKUP</button>
+      <button onClick={clearAllData} style={S.btn("#ff2244")}>CLEAR ALL DATA</button>
       <input
         type="file"
         ref={fileInputRef}

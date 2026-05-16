@@ -5,6 +5,9 @@ export const STATUS_COLORS  = {"DM Sent":"#ffcc00","Trial Sent":"#00ff88","Negot
 export const TIER_COLORS    = {1:"#ffcc00",2:"#4488ff",3:"#888"};
 export const DM_TARGET      = 50;
 
+export const DEFAULT_INCOME = 3700;
+export const DEFAULT_GOAL = 37500;
+
 export const SERVICE_TIERS = [
   { id:"basic",   name:"BASIC EDIT",      sarPrice:1200, features:["4 Reels/month","48h delivery","Arabic captions"],                             color:"#4488ff", badge:"ENTRY" },
   { id:"growth",  name:"GROWTH RETAINER", sarPrice:2500, features:["8 Reels/month","Same-day delivery","Arabic + English captions","1 Ad edit"], color:"#00ff88", badge:"POPULAR" },
@@ -54,3 +57,13 @@ export const DEFAULT_BUDGET   = [
 export const DEFAULT_PROPOSALS = [{id:1,client:"Al-Nassr Gym",value:2500,status:"Sent",date:"03/02",notes:"8 Reels/mo"}];
 
 export const DEFAULT_INVOICES  = [{id:1,client:"Al-Nassr Gym",amount:2500,status:"Pending",issued:"03/02",due:"03/09"}];
+
+export const TABS = [
+  { id: 0, label: "TELEMETRY", sub: "daily log", icon: "📊" },
+  { id: 1, label: "AGENCY", sub: "pipeline", icon: "🏢" },
+  { id: 2, label: "BUDGET", sub: "burn rate", icon: "💰" },
+  { id: 3, label: "PROPOSALS", sub: "deals", icon: "📋" },
+  { id: 4, label: "INVOICING", sub: "payments", icon: "🧾" },
+  { id: 5, label: "SVC TIERS", sub: "packages", icon: "💎" },
+  { id: 6, label: "ARCH", sub: "rules", icon: "⚙️" },
+];

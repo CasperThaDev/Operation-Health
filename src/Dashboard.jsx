@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useLocalState } from "./hooks/useLocalState";
 import { useMobile } from "./hooks/useMobile";
-import { isoToday } from "./utils";
-import { DEFAULT_CLIENTS } from "./constants";
+import { isoToday, rowXP, xpColor } from "./utils";
+import { DEFAULT_CLIENTS, DEFAULT_TELEMETRY, TABS } from "./constants";
 import { S } from "./components/UI";
 import { RevTicker } from "./components/RevTicker";
 import { CmdPalette } from "./components/CmdPalette";
@@ -16,16 +16,6 @@ import { InvoicingTab } from "./components/Tabs/InvoicingTab";
 import { ServiceTiersTab } from "./components/Tabs/ServiceTiersTab";
 import { ArchitectureTab } from "./components/Tabs/ArchitectureTab";
 
-const TABS=[
-  {id:0,label:"TELEMETRY", sub:"daily log",icon:"📊"},
-  {id:1,label:"AGENCY",    sub:"pipeline", icon:"🏢"},
-  {id:2,label:"BUDGET",    sub:"burn rate",icon:"💰"},
-  {id:3,label:"PROPOSALS", sub:"deals",    icon:"📋"},
-  {id:4,label:"INVOICING", sub:"payments", icon:"🧾"},
-  {id:5,label:"SVC TIERS", sub:"packages", icon:"💎"},
-  {id:6,label:"ARCH",      sub:"rules",    icon:"⚙️"},
-];
-
 export default function Dashboard() {
   const [active,setActive]   = useState(0);
   const [booted,setBooted]   = useState(false);
@@ -34,10 +24,17 @@ export default function Dashboard() {
   const [menuOpen,setMenuOpen] = useState(false);
   const mobile = useMobile();
   const [clients] = useLocalState("v5_clients", DEFAULT_CLIENTS);
+  const [rows, setRows] = useLocalState("v5_telem", DEFAULT_TELEMETRY);
 
   const bootMsgs=["LOADING KSA_OS v5.0…","PATCHING MEMORY LEAKS…","APPLYING DATA VALIDATION…","INJECTING BUSINESS LOGIC…","MOUNTING DAILY BURN ENGINE…","SYSTEM READY ✓"];
   useEffect(()=>{ if(bootStep<bootMsgs.length){ const t=setTimeout(()=>setBootStep(s=>s+1),300); return()=>clearTimeout(t); } else setTimeout(()=>setBooted(true),200); },[bootStep]);
   useEffect(()=>{ const h=e=>{ if((e.metaKey||e.ctrlKey)&&e.key==="k"){ e.preventDefault(); setCmdOpen(o=>!o); } if(e.key==="Escape") setCmdOpen(false); }; window.addEventListener("keydown",h); return()=>window.removeEventListener("keydown",h); },[]);
+
+  const todayXP = useMemo(() => {
+    const today = isoToday();
+    const row = rows.find(r => r.date === today);
+    return row ? rowXP(row) : null;
+  }, [rows]);
 
   if(!booted) return (
     <div style={{minHeight:"100vh",background:"#030303",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:18}}>
@@ -56,7 +53,15 @@ export default function Dashboard() {
     </div>
   );
 
-  const Components=[TelemetryTab, AgencyTab, BudgetTab, ProposalsTab, InvoicingTab, (p)=><ServiceTiersTab {...p} clients={clients}/>, ArchitectureTab];
+  const Components=[
+    (p) => <TelemetryTab {...p} rows={rows} setRows={setRows} />,
+    AgencyTab,
+    BudgetTab,
+    ProposalsTab,
+    InvoicingTab,
+    (p)=><ServiceTiersTab {...p} clients={clients}/>,
+    ArchitectureTab
+  ];
   const ActiveComponent=Components[active];
 
   return (
@@ -86,6 +91,12 @@ export default function Dashboard() {
             <div style={{width:5,height:5,borderRadius:"50%",background:"#00ff88",boxShadow:"0 0 6px #00ff88",animation:"pulse 2s infinite"}}/>
             <span style={S.mono(8,"#00ff88")}>LIVE · DEBOUNCED</span>
           </div>}
+          {todayXP !== null && (
+            <div style={{display:"flex",alignItems:"center",gap:7,padding:"4px 10px",background:`${xpColor(todayXP)}10`,borderRadius:4,border:`1px solid ${xpColor(todayXP)}30`}}>
+              <span style={S.mono(8, "#555")}>TODAY_XP</span>
+              <span style={{fontFamily:"'Bebas Neue',cursive",fontSize:14,color:xpColor(todayXP)}}>{todayXP}%</span>
+            </div>
+          )}
         </div>
         <div style={{display:"flex",gap:7,alignItems:"center"}}>
           {!mobile && <DataSync />}

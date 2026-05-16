@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import { useLocalState } from "../../hooks/useLocalState";
 import { useAnimNum } from "../../hooks/useAnimNum";
 import { isoToday, rowXP, xpColor, safeNum, exportCSV } from "../../utils";
-import { DEFAULT_TELEMETRY, NON_NEGS, DM_TARGET } from "../../constants";
+import { NON_NEGS, DM_TARGET } from "../../constants";
 import { S, Bit, Bar, NumInput } from "../UI";
 
 function XPTrend({ rows }) {
@@ -39,8 +39,7 @@ function XPTrend({ rows }) {
   );
 }
 
-export function TelemetryTab({mobile}) {
-  const [rows,setRows]   = useLocalState("v5_telem", DEFAULT_TELEMETRY);
+export function TelemetryTab({mobile, rows, setRows}) {
   const [nnDone,setNnDone] = useLocalState("v5_nn",{});
   const today = isoToday(); // "YYYY-MM-DD" — stable across all locales and devices
   const [form,setForm]   = useState({date:today,health:0,dmsSent:0,delivery:0,finLogged:0,finDisc:0,note:""});

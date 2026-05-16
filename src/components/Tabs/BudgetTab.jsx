@@ -1,13 +1,13 @@
-import React, { useState, useRef, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import { useLocalState } from "../../hooks/useLocalState";
 import { useAnimNum } from "../../hooks/useAnimNum";
 import { safeNum } from "../../utils";
-import { DEFAULT_BUDGET } from "../../constants";
+import { DEFAULT_BUDGET, DEFAULT_INCOME, DEFAULT_GOAL } from "../../constants";
 import { S, Bar, NumInput } from "../UI";
 
 export function BudgetTab({mobile}) {
-  const [income,setIncome] = useLocalState("v5_income",3700);
-  const [goal, setGoal] = useLocalState("v5_goal", 37500);
+  const [income,setIncome] = useLocalState("v5_income", DEFAULT_INCOME);
+  const [goal, setGoal] = useLocalState("v5_goal", DEFAULT_GOAL);
   const [items,setItems]   = useLocalState("v5_budget",DEFAULT_BUDGET);
   const [newItem,setNewItem] = useState({cat:"Personal",name:"",budget:"",actual:""});
   const [showAdd,setShowAdd] = useState(false);
